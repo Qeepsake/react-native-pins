@@ -1,5 +1,9 @@
 # react-native-pins
 
+[![npm](https://img.shields.io/npm/v/react-native-pins.svg?style=flat-square)](https://www.npmjs.com/package/react-native-pins)
+[![npm licence](http://img.shields.io/npm/l/react-native-pins.svg?style=flat-square)](https://npmjs.org/package/react-native-pins)
+[![npm downloads](http://img.shields.io/npm/dt/react-native-pins.svg?style=flat-square)](https://npmjs.org/package/react-native-pins)
+
 <img src="https://raw.githubusercontent.com/LukeBrandonFarrell/open-source-images/master/react-native-awesome-pin/pins.png" width="50%" /><br />
 
 The pins come with a shake animation and configurable 
