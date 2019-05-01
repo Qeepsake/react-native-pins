@@ -1,0 +1,19 @@
+{
+  "name": "react-native-pins",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lukebrandonfarrell/react-native-pins.git"
+  },
+  "author": "Luke Brandon Farrell",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lukebrandonfarrell/react-native-pins/issues"
+  },
+  "homepage": "https://github.com/lukebrandonfarrell/react-native-pins#readme"
+}
