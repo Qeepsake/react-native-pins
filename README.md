@@ -20,7 +20,7 @@ To get started install via npm:
 
 Import:
 ```js
- import { PinInput } from 'react-native-awesome-pin';
+ import { PinInput } from 'react-native-pins';
 ```
 
 Then add it to your code:

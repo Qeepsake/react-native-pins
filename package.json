@@ -1,7 +1,7 @@
 {
   "name": "react-native-pins",
   "version": "1.0.1",
-  "description": "",
+  "description": "Pins for displaying progress (active / non-active) with animation and feedback ⚫⚫⚪⚪⚪",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -15,5 +15,20 @@
   "bugs": {
     "url": "https://github.com/lukebrandonfarrell/react-native-pins/issues"
   },
-  "homepage": "https://github.com/lukebrandonfarrell/react-native-pins#readme"
+  "homepage": "https://github.com/lukebrandonfarrell/react-native-pins#readme",
+  "keywords": [
+    "pin",
+    "code",
+    "screen",
+    "lock",
+    "number",
+    "react-native",
+    "android",
+    "ios",
+    "javascript",
+    "pins",
+    "pin-code",
+    "pure-javascript",
+    "progress-bar"
+  ]
 }
