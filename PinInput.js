@@ -68,17 +68,17 @@ class PinInput extends Component {
 
     for (let p = 0; p < numberOfPins; p++) {
       pins.push(
-      <View
-      key={p}
-      style={[
+        <View
+          key={p}
+          style={[
             pinDefaultStyle,
-        pinStyle,
-        p < numberOfPinsActive
-          ? { ...pinActiveDefaultStyle, ...pinActiveStyle }
-          : {}
-    ]}
-      />
-    );
+            pinStyle,
+            p < numberOfPinsActive
+              ? { ...pinActiveDefaultStyle, ...pinActiveStyle }
+              : {}
+          ]}
+        />
+      );
     }
 
     // Create the shake animation via interpolation
@@ -89,10 +89,12 @@ class PinInput extends Component {
 
     return (
       <Animated.View
-          style={[
-                containerDefaultStyle,
-            containerStyle,
-          { left: shakeAnimation }
+        style={[
+          containerDefaultStyle,
+          containerStyle,
+          {
+            transform: [{ translateX: shakeAnimation }]
+          }
         ]}
       >
         {pins}
@@ -113,7 +115,10 @@ class PinInput extends Component {
     this.state.shake.setValue(0);
 
     // Animate the pins to shake
-    Animated.spring(this.state.shake, { toValue: 1 }).start(() => {
+    Animated.spring(this.state.shake, {
+      toValue: 1,
+      useNativeDriver: true
+    }).start(() => {
       if (this.props.animationShakeCallback) {
         this.props.animationShakeCallback();
       }
