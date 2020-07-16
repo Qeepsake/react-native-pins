@@ -1,10 +1,10 @@
 {
   "name": "react-native-pins",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Pins for displaying progress (active / non-active) with animation and feedback ⚫⚫⚪⚪⚪",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\""
   },
   "repository": {
     "type": "git",
