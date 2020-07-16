@@ -1,6 +1,6 @@
 {
   "name": "react-native-pins",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Pins for displaying progress (active / non-active) with animation and feedback ⚫⚫⚪⚪⚪",
   "main": "index.js",
   "scripts": {
