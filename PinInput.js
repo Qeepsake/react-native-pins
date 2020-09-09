@@ -58,7 +58,8 @@ class PinInput extends Component {
       // Style Props
       containerStyle,
       pinStyle,
-      pinActiveStyle
+      pinActiveStyle,
+      activeOnly = false
     } = this.props;
     /** State */
     const { shake } = this.state;
@@ -73,9 +74,13 @@ class PinInput extends Component {
           style={[
             pinDefaultStyle,
             pinStyle,
-            p < numberOfPinsActive
-              ? { ...pinActiveDefaultStyle, ...pinActiveStyle }
-              : {}
+            activeOnly
+              ? p == numberOfPinsActive - 1
+                ? { ...pinActiveDefaultStyle, ...pinActiveStyle }
+                : {}
+              : p < numberOfPinsActive
+                ? { ...pinActiveDefaultStyle, ...pinActiveStyle }
+                : {}
           ]}
         />
       );
