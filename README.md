@@ -41,6 +41,7 @@ will be fired when the animation is complete. See props below.
 | Prop            | Type          | Optional  | Default              | Description                                                                             |
 | --------------- | ------------- | --------- | -------------------- | --------------------------------------------------------------------------------------- |
 | onRef           | any           | No        |                      | onRef allows you to call the `shake()` method.                              |
+| activeOnly           | booolean           | yes        |   false                   | Whether to only fill the active pin or to fill all of them.                              |
 | numberOfPins    | number        | Yes       | 5                    | Number of pins to render.                                                               |
 | numberOfPinsActive | number     | Yes       | 0                    | Number of active pins. You can pass the `pin.length` here.                              |
 | vibration       | bool          | Yes       | true                 | Should vibration be enabled on shake?                                                   |
