@@ -40,8 +40,10 @@ will be fired when the animation is complete. See props below.
 
 | Prop            | Type          | Optional  | Default              | Description                                                                             |
 | --------------- | ------------- | --------- | -------------------- | --------------------------------------------------------------------------------------- |
-| onRef           | any           | No        |                      | onRef allows you to call the `shake()` method.                              |
-| activeOnly           | booolean           | yes        |   false                   | Whether to only fill the active pin or to fill all of them.                              |
+| onRef           | any           | No        |                      | onRef allows you to call the `shake()` method.                                          |
+| activeOnly      | booolean      | yes       |   false              | Whether to only fill the active pin or to fill all of them.                             |
+| spacing         | number        | yes       | 15                   | The space between the pins                                                              |
+| pinSize         | number        | yes       | 18                   | The size of the pins                                                                    |
 | numberOfPins    | number        | Yes       | 5                    | Number of pins to render.                                                               |
 | numberOfPinsActive | number     | Yes       | 0                    | Number of active pins. You can pass the `pin.length` here.                              |
 | vibration       | bool          | Yes       | true                 | Should vibration be enabled on shake?                                                   |
