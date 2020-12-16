@@ -59,7 +59,9 @@ class PinInput extends Component {
       containerStyle,
       pinStyle,
       pinActiveStyle,
-      activeOnly = false
+      activeOnly = false,
+      pinSize,
+      spacing
     } = this.props;
     /** State */
     const { shake } = this.state;
@@ -80,7 +82,16 @@ class PinInput extends Component {
                 : {}
               : p < numberOfPinsActive
                 ? { ...pinActiveDefaultStyle, ...pinActiveStyle }
-                : {}
+                : {},
+            pinSize && {
+              width: pinSize,
+              height: pinSize,
+              borderRadius: pinSize / 2
+            },
+            spacing && {
+              marginRight: spacing,
+              marginLeft: spacing
+            }
           ]}
         />
       );
