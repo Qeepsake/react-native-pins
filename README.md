@@ -4,7 +4,7 @@
 [![npm licence](http://img.shields.io/npm/l/react-native-pins.svg?style=flat-square)](https://npmjs.org/package/react-native-pins)
 [![npm downloads](http://img.shields.io/npm/dt/react-native-pins.svg?style=flat-square)](https://npmjs.org/package/react-native-pins)
 
-<img align="left" src="https://raw.githubusercontent.com/LukeBrandonFarrell/open-source-images/master/react-native-awesome-pin/pins.png" width="50%" /><br />
+<img align="left" src="scrolling-pins-1.gif" width="48%" /><br />
 <img src="scrolling-pins.gif" width="48%" />
 
 The pins come with a shake animation and configurable 
