@@ -4,7 +4,7 @@
  */
 
 import React, { Component } from "react";
-import { View, Animated, StyleSheet, Vibration } from "react-native";
+import { Animated, StyleSheet, Vibration } from "react-native";
 import PropTypes from "prop-types";
 
 class PinInput extends Component {
@@ -17,8 +17,18 @@ class PinInput extends Component {
     super(props);
 
     this.state = {
-      shake: new Animated.Value(0)
+      shake: new Animated.Value(0),
+      animatedValue: new Animated.Value(0),
+      animatedPinValue: new Animated.Value(0),
+      positionOfActivePin: 1,
+      xOffsetValue: 0,
+      prevPinSizes: [],
+      currentPinSizes: [],
     };
+
+    this.setPositionOfPins = this.setPositionOfPins.bind(this);
+    this.getPinSize = this.getPinSize.bind(this);
+    this.updatePinSizes = this.updatePinSizes.bind(this);
   }
 
   /**
@@ -28,6 +38,18 @@ class PinInput extends Component {
    */
   componentDidMount() {
     this.props.onRef(this);
+
+    // Get and set the initial pin sizes
+    const { numberOfPins } = this.props;
+    let initialPinSizes = [];
+    for (let p = 0; p < numberOfPins; p++) {
+      let size = this.getPinSize(p);
+      initialPinSizes[p] = size;
+    }
+    this.setState({
+      prevPinSizes: initialPinSizes,
+      currentPinSizes: initialPinSizes,
+    });
   }
 
   /**
@@ -42,6 +64,44 @@ class PinInput extends Component {
   /**
    * [ Built-in React method. ]
    *
+   * Executed when there is any changes to the props or state
+   */
+  componentDidUpdate(prevProps) {
+    const prevNumberOfPinsActive = prevProps.numberOfPinsActive;
+    const { numberOfPinsActive } = this.props;
+
+    if (prevNumberOfPinsActive != numberOfPinsActive) {
+      this.setPositionOfPins(prevNumberOfPinsActive).then(() => {
+        this.updatePinSizes();
+
+        // Reset animation to so we can reanimate the pins
+        this.state.animatedPinValue.setValue(0);
+        Animated.parallel([
+          Animated.timing(this.state.animatedPinValue, {
+            duration: 300,
+            toValue: 1,
+            useNativeDriver: false,
+          }),
+          Animated.timing(this.state.animatedValue, {
+            duration: 300,
+            toValue: this.state.xOffsetValue,
+            useNativeDriver: false,
+          }),
+        ]).start();
+      });
+    }
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return (
+      this.state.currentPinSizes != nextState.currentPinSizes ||
+      this.props.numberOfPinsActive != nextProps.numberOfPinsActive
+    );
+  }
+
+  /**
+   * [ Built-in React method. ]
+   *
    * Allows us to render JSX to the screen
    */
   render() {
@@ -49,29 +109,46 @@ class PinInput extends Component {
     const {
       containerDefaultStyle,
       pinDefaultStyle,
-      pinActiveDefaultStyle
+      pinActiveDefaultStyle,
     } = styles;
     /** Props */
     const {
       numberOfPinsActive,
       numberOfPins,
+      maxNumberOfLargePins,
       // Style Props
       containerStyle,
       pinStyle,
       pinActiveStyle,
-      activeOnly = false,
+      activeOnly,
       pinSize,
-      spacing
+      spacing,
     } = this.props;
     /** State */
-    const { shake } = this.state;
+    const {
+      shake,
+      animatedPinValue,
+      prevPinSizes,
+      currentPinSizes,
+    } = this.state;
 
     // Create the pins from set props
     const pins = [];
+    const hasMaxNumberOfPins = maxNumberOfLargePins < numberOfPins;
 
     for (let p = 0; p < numberOfPins; p++) {
+      const prevSize = prevPinSizes[p];
+      const currentSize = currentPinSizes[p];
+
+      const size = hasMaxNumberOfPins
+        ? animatedPinValue.interpolate({
+            inputRange: [0, 1],
+            outputRange: [prevSize, currentSize],
+          })
+        : pinSize;
+
       pins.push(
-        <View
+        <Animated.View
           key={p}
           style={[
             pinDefaultStyle,
@@ -81,17 +158,17 @@ class PinInput extends Component {
                 ? { ...pinActiveDefaultStyle, ...pinActiveStyle }
                 : {}
               : p < numberOfPinsActive
-                ? { ...pinActiveDefaultStyle, ...pinActiveStyle }
-                : {},
+              ? { ...pinActiveDefaultStyle, ...pinActiveStyle }
+              : {},
             pinSize && {
-              width: pinSize,
-              height: pinSize,
-              borderRadius: pinSize / 2
+              width: size,
+              height: size,
+              borderRadius: size,
             },
             spacing && {
               marginRight: spacing,
-              marginLeft: spacing
-            }
+              marginLeft: spacing,
+            },
           ]}
         />
       );
@@ -100,7 +177,7 @@ class PinInput extends Component {
     // Create the shake animation via interpolation
     const shakeAnimation = shake.interpolate({
       inputRange: [0, 0.2, 0.4, 0.6, 0.8, 1],
-      outputRange: [0, -20, 20, -20, 20, 0]
+      outputRange: [0, -20, 20, -20, 20, 0],
     });
 
     return (
@@ -109,8 +186,11 @@ class PinInput extends Component {
           containerDefaultStyle,
           containerStyle,
           {
-            transform: [{ translateX: shakeAnimation }]
-          }
+            transform: [
+              { translateX: shakeAnimation },
+              { translateX: this.state.animatedValue },
+            ],
+          },
         ]}
       >
         {pins}
@@ -133,12 +213,90 @@ class PinInput extends Component {
     // Animate the pins to shake
     Animated.spring(this.state.shake, {
       toValue: 1,
-      useNativeDriver: true
+      useNativeDriver: true,
     }).start(() => {
       if (this.props.animationShakeCallback) {
         this.props.animationShakeCallback();
       }
     });
+  }
+
+  /**
+   * Sets the position of the active pin among the large pins and the x-offset of the pins.
+   * @param {Number} prevNumberOfPinsActive The index of the previous active pin
+   */
+  async setPositionOfPins(prevNumberOfPinsActive) {
+    const { maxNumberOfLargePins, spacing, numberOfPinsActive } = this.props;
+    const { positionOfActivePin, xOffsetValue } = this.state;
+
+    // If index of pin increases
+    if (numberOfPinsActive > prevNumberOfPinsActive) {
+      // If the position of the pin is at the right-end, then decrease the xOffsetValue for the pins to slide left
+      // Else, we increase the position of the active pin among the large pins
+      if (positionOfActivePin == maxNumberOfLargePins) {
+        await this.setState({ xOffsetValue: xOffsetValue - spacing });
+      } else {
+        await this.setState({ positionOfActivePin: positionOfActivePin + 1 });
+      }
+      // If index of pin decreases
+    } else {
+      // If the position of the pin is at the left-end, then increase the xOffsetValue for the pins to slide right
+      // Else, we decrease the position of the active pin among the large pins
+      if (positionOfActivePin == 1) {
+        await this.setState({ xOffsetValue: xOffsetValue + spacing });
+      } else {
+        await this.setState({ positionOfActivePin: positionOfActivePin - 1 });
+      }
+    }
+  }
+
+  /**
+   * Updates the sizes of all the pins depending on the number of pins active.
+   */
+  updatePinSizes() {
+    const { currentPinSizes } = this.state;
+
+    let updatedPinSizes = [];
+
+    this.setState({ prevPinSizes: currentPinSizes }, () => {
+      currentPinSizes.map((prevSize, idx) => {
+        let size = this.getPinSize(idx);
+        updatedPinSizes[idx] = size;
+      });
+    });
+
+    this.setState({ currentPinSizes: updatedPinSizes });
+  }
+
+  /**
+   * Returns size of an individual pin.
+   * @param {number} idx Index of the pin
+   */
+  getPinSize(idx) {
+    const { maxNumberOfLargePins, numberOfPinsActive, pinSize } = this.props;
+    const { positionOfActivePin } = this.state;
+    if (
+      idx > numberOfPinsActive - positionOfActivePin - 1 &&
+      idx < numberOfPinsActive - positionOfActivePin + maxNumberOfLargePins
+    ) {
+      return pinSize;
+    }
+
+    if (
+      idx == numberOfPinsActive - positionOfActivePin - 1 ||
+      idx == numberOfPinsActive - positionOfActivePin + maxNumberOfLargePins
+    ) {
+      return pinSize / 2;
+    }
+
+    if (
+      idx == numberOfPinsActive - positionOfActivePin - 2 ||
+      idx == numberOfPinsActive - positionOfActivePin + maxNumberOfLargePins + 1
+    ) {
+      return pinSize / 4;
+    }
+
+    return 0;
   }
 }
 
@@ -148,10 +306,14 @@ PinInput.propTypes = {
   numberOfPinsActive: PropTypes.number,
   vibration: PropTypes.bool,
   animationShakeCallback: PropTypes.func,
+  maxNumberOfLargePins: PropTypes.number,
+  activeOnly: PropTypes.bool,
   // Style props
   containerStyle: PropTypes.object,
   pinStyle: PropTypes.object,
-  pinActiveStyle: PropTypes.object
+  pinActiveStyle: PropTypes.object,
+  pinSize: PropTypes.number,
+  spacing: PropTypes.number,
 };
 
 PinInput.defaultProps = {
@@ -160,7 +322,11 @@ PinInput.defaultProps = {
   // Active number of pins
   numberOfPinsActive: 0,
   // Is vibration enabled or disabled
-  vibration: true
+  vibration: true,
+  // Default pin size
+  pinSize: 18,
+  // Default spacing between pins
+  spacing: 15,
 };
 
 export default PinInput;
@@ -177,18 +343,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingTop: 25,
-    paddingBottom: 25
+    paddingBottom: 25,
   },
   pinDefaultStyle: {
-    width: 18,
-    height: 18,
-    marginRight: 15,
-    marginLeft: 15,
     borderRadius: 9,
     opacity: 0.45,
-    backgroundColor: "#FFF"
+    backgroundColor: "#FFF",
   },
   pinActiveDefaultStyle: {
-    opacity: 1.0
-  }
+    opacity: 1.0,
+  },
 });
