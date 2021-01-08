@@ -134,7 +134,10 @@ class PinInput extends Component {
 
     // Create the pins from set props
     const pins = [];
-    const hasMaxNumberOfPins = numberOfPinsMaximum < numberOfPins;
+    const hasMaxNumberOfPins =
+      numberOfPinsMaximum < numberOfPins &&
+      numberOfPinsMaximum > 0 &&
+      numberOfPins;
 
     for (let p = 0; p < numberOfPins; p++) {
       const prevSize = prevPinSizes[p];
