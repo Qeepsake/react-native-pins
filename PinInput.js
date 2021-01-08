@@ -115,7 +115,7 @@ class PinInput extends Component {
     const {
       numberOfPinsActive,
       numberOfPins,
-      maxNumberOfLargePins,
+      numberOfPinsMaximum,
       // Style Props
       containerStyle,
       pinStyle,
@@ -134,7 +134,7 @@ class PinInput extends Component {
 
     // Create the pins from set props
     const pins = [];
-    const hasMaxNumberOfPins = maxNumberOfLargePins < numberOfPins;
+    const hasMaxNumberOfPins = numberOfPinsMaximum < numberOfPins;
 
     for (let p = 0; p < numberOfPins; p++) {
       const prevSize = prevPinSizes[p];
@@ -226,14 +226,14 @@ class PinInput extends Component {
    * @param {Number} prevNumberOfPinsActive The index of the previous active pin
    */
   async setPositionOfPins(prevNumberOfPinsActive) {
-    const { maxNumberOfLargePins, spacing, numberOfPinsActive } = this.props;
+    const { numberOfPinsMaximum, spacing, numberOfPinsActive } = this.props;
     const { positionOfActivePin, xOffsetValue } = this.state;
 
     // If index of pin increases
     if (numberOfPinsActive > prevNumberOfPinsActive) {
       // If the position of the pin is at the right-end, then decrease the xOffsetValue for the pins to slide left
       // Else, we increase the position of the active pin among the large pins
-      if (positionOfActivePin == maxNumberOfLargePins) {
+      if (positionOfActivePin == numberOfPinsMaximum) {
         await this.setState({ xOffsetValue: xOffsetValue - spacing });
       } else {
         await this.setState({ positionOfActivePin: positionOfActivePin + 1 });
@@ -273,25 +273,25 @@ class PinInput extends Component {
    * @param {number} idx Index of the pin
    */
   getPinSize(idx) {
-    const { maxNumberOfLargePins, numberOfPinsActive, pinSize } = this.props;
+    const { numberOfPinsMaximum, numberOfPinsActive, pinSize } = this.props;
     const { positionOfActivePin } = this.state;
     if (
       idx > numberOfPinsActive - positionOfActivePin - 1 &&
-      idx < numberOfPinsActive - positionOfActivePin + maxNumberOfLargePins
+      idx < numberOfPinsActive - positionOfActivePin + numberOfPinsMaximum
     ) {
       return pinSize;
     }
 
     if (
       idx == numberOfPinsActive - positionOfActivePin - 1 ||
-      idx == numberOfPinsActive - positionOfActivePin + maxNumberOfLargePins
+      idx == numberOfPinsActive - positionOfActivePin + numberOfPinsMaximum
     ) {
       return pinSize / 2;
     }
 
     if (
       idx == numberOfPinsActive - positionOfActivePin - 2 ||
-      idx == numberOfPinsActive - positionOfActivePin + maxNumberOfLargePins + 1
+      idx == numberOfPinsActive - positionOfActivePin + numberOfPinsMaximum + 1
     ) {
       return pinSize / 4;
     }
@@ -306,7 +306,7 @@ PinInput.propTypes = {
   numberOfPinsActive: PropTypes.number,
   vibration: PropTypes.bool,
   animationShakeCallback: PropTypes.func,
-  maxNumberOfLargePins: PropTypes.number,
+  numberOfPinsMaximum: PropTypes.number,
   activeOnly: PropTypes.bool,
   // Style props
   containerStyle: PropTypes.object,

@@ -30,7 +30,7 @@ Then add it to your code:
     onRef={ref => (this.pins = ref)}
     numberOfPins={5}
     numberOfPinsActive={2}
-    maxNumberOfLargePins={2}
+    numberOfPinsMaximum={2}
     activeOnly
 />
 ```
@@ -54,7 +54,7 @@ will be fired when the animation is complete. See props below.
 | containerStyle  | object        | Yes       | See PinInput.js      | Style applied to PINS container.                                                        |
 | pinStyle        | object        | Yes       | See PinInput.js      | Style applied to each circle PIN.                                                       |
 | pinActiveStyle  | object        | Yes       | See PinInput.js      | Style applied to each circle PIN when it is active.                                     |
-| maxNumberOfLargePins| number    | Yes       |                      | The max number of large pins.                                                           |
+| numberOfPinsMaximum | number    | Yes       |                      | The max number of large pins.                                                           |
 
 ## Contributors ✨
 
