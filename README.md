@@ -54,7 +54,7 @@ will be fired when the animation is complete. See props below.
 | containerStyle  | object        | Yes       | See PinInput.js      | Style applied to PINS container.                                                        |
 | pinStyle        | object        | Yes       | See PinInput.js      | Style applied to each circle PIN.                                                       |
 | pinActiveStyle  | object        | Yes       | See PinInput.js      | Style applied to each circle PIN when it is active.                                     |
-| numberOfPinsMaximum | number    | Yes       |                      | The max number of large pins.                                                           |
+| numberOfPinsMaximum | number    | Yes       |                      | This property is used to set a maximum number of pins to show. If specified, then the pins will have an animation effect, as showcased in the demo above                                                       |
 
 ## Contributors ✨
 
