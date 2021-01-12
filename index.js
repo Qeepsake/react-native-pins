@@ -1,3 +1,3 @@
-import PinInput from "./PinInput";
+import Pins from "./Pins";
 
-export { PinInput };
+export { Pins };
