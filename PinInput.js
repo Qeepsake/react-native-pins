@@ -1,13 +1,13 @@
 /**
  * @author Luke Brandon Farrell
- * @description Pin Input component with shake animation
+ * @description Pins component with shake animation
  */
 
 import React, { Component } from "react";
 import { Animated, StyleSheet, Vibration } from "react-native";
 import PropTypes from "prop-types";
 
-class PinInput extends Component {
+class Pins extends Component {
   /**
    * [ Built-in React method. ]
    *
@@ -18,10 +18,8 @@ class PinInput extends Component {
 
     this.state = {
       shake: new Animated.Value(0),
-      animatedValue: new Animated.Value(0),
       animatedPinValue: new Animated.Value(0),
       positionOfActivePin: 1,
-      xOffsetValue: 0,
       prevPinSizes: [],
       currentPinSizes: [],
     };
@@ -37,7 +35,9 @@ class PinInput extends Component {
    * Executed when the component is mounted to the screen.
    */
   componentDidMount() {
-    this.props.onRef(this);
+    if (this.props.onRef != undefined) {
+      this.props.onRef(this);
+    }
 
     // Get and set the initial pin sizes
     const { numberOfPins } = this.props;
@@ -58,7 +58,9 @@ class PinInput extends Component {
    * Executed when the component is unmounted from the screen
    */
   componentWillUnmount() {
-    this.props.onRef(undefined);
+    if (this.props.onRef != undefined) {
+      this.props.onRef(undefined);
+    }
   }
 
   /**
@@ -76,18 +78,11 @@ class PinInput extends Component {
 
         // Reset animation to so we can reanimate the pins
         this.state.animatedPinValue.setValue(0);
-        Animated.parallel([
-          Animated.timing(this.state.animatedPinValue, {
-            duration: 300,
-            toValue: 1,
-            useNativeDriver: false,
-          }),
-          Animated.timing(this.state.animatedValue, {
-            duration: 300,
-            toValue: this.state.xOffsetValue,
-            useNativeDriver: false,
-          }),
-        ]).start();
+        Animated.timing(this.state.animatedPinValue, {
+          duration: 300,
+          toValue: 1,
+          useNativeDriver: false,
+        }).start();
       });
     }
   }
@@ -142,6 +137,7 @@ class PinInput extends Component {
     for (let p = 0; p < numberOfPins; p++) {
       const prevSize = prevPinSizes[p];
       const currentSize = currentPinSizes[p];
+      const currentSizeIsMoreThanZero = currentSize > 0;
 
       const size = hasMaxNumberOfPins
         ? animatedPinValue.interpolate({
@@ -168,10 +164,11 @@ class PinInput extends Component {
               height: size,
               borderRadius: size,
             },
-            spacing && {
-              marginRight: spacing,
-              marginLeft: spacing,
-            },
+            spacing &&
+              currentSizeIsMoreThanZero && {
+                marginRight: spacing,
+                marginLeft: spacing,
+              },
           ]}
         />
       );
@@ -189,10 +186,7 @@ class PinInput extends Component {
           containerDefaultStyle,
           containerStyle,
           {
-            transform: [
-              { translateX: shakeAnimation },
-              { translateX: this.state.animatedValue },
-            ],
+            transform: [{ translateX: shakeAnimation }],
           },
         ]}
       >
@@ -225,29 +219,23 @@ class PinInput extends Component {
   }
 
   /**
-   * Sets the position of the active pin among the large pins and the x-offset of the pins.
+   * Sets the position of the active pin among the large pins.
    * @param {Number} prevNumberOfPinsActive The index of the previous active pin
    */
   async setPositionOfPins(prevNumberOfPinsActive) {
-    const { numberOfPinsMaximum, spacing, numberOfPinsActive } = this.props;
-    const { positionOfActivePin, xOffsetValue } = this.state;
+    const { numberOfPinsMaximum, numberOfPinsActive } = this.props;
+    const { positionOfActivePin } = this.state;
 
     // If index of pin increases
     if (numberOfPinsActive > prevNumberOfPinsActive) {
-      // If the position of the pin is at the right-end, then decrease the xOffsetValue for the pins to slide left
-      // Else, we increase the position of the active pin among the large pins
-      if (positionOfActivePin == numberOfPinsMaximum) {
-        await this.setState({ xOffsetValue: xOffsetValue - spacing });
-      } else {
+      // If the position of the pin is not at the right-end, we increase the position of the active pin among the large pins
+      if (positionOfActivePin != numberOfPinsMaximum) {
         await this.setState({ positionOfActivePin: positionOfActivePin + 1 });
       }
       // If index of pin decreases
     } else {
-      // If the position of the pin is at the left-end, then increase the xOffsetValue for the pins to slide right
-      // Else, we decrease the position of the active pin among the large pins
-      if (positionOfActivePin == 1) {
-        await this.setState({ xOffsetValue: xOffsetValue + spacing });
-      } else {
+      // If the position of the pin is not at the left-end,  we decrease the position of the active pin among the large pins
+      if (positionOfActivePin != 1) {
         await this.setState({ positionOfActivePin: positionOfActivePin - 1 });
       }
     }
@@ -303,8 +291,8 @@ class PinInput extends Component {
   }
 }
 
-PinInput.propTypes = {
-  onRef: PropTypes.any.isRequired,
+Pins.propTypes = {
+  onRef: PropTypes.any,
   numberOfPins: PropTypes.number,
   numberOfPinsActive: PropTypes.number,
   vibration: PropTypes.bool,
@@ -319,7 +307,7 @@ PinInput.propTypes = {
   spacing: PropTypes.number,
 };
 
-PinInput.defaultProps = {
+Pins.defaultProps = {
   // Number of pins to create
   numberOfPins: 5,
   // Active number of pins
@@ -332,7 +320,7 @@ PinInput.defaultProps = {
   spacing: 15,
 };
 
-export default PinInput;
+export default Pins;
 
 /** -------------------------------------------- */
 /**             Component Styling                */
@@ -342,7 +330,7 @@ const styles = StyleSheet.create({
   // property to expand the pins to take up more space
   // on the screen. The default is 0.8.
   containerDefaultStyle: {
-    flex: 1,
+r    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     paddingTop: 25,

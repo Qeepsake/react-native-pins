@@ -21,12 +21,12 @@ To get started install via npm:
 
 Import:
 ```js
- import { PinInput } from 'react-native-pins';
+ import { Pins } from 'react-native-pins';
 ```
 
 Then add it to your code:
 ```js
-<PinInput
+<Pins
     onRef={ref => (this.pins = ref)}
     numberOfPins={5}
     numberOfPinsActive={2}
@@ -35,15 +35,15 @@ Then add it to your code:
 />
 ```
 
-The `<PinInput />` has a `shake()` method which can be called through a reference `this.pins.shake()`.
+The `<Pins />` has a `shake()` method which can be called through a reference `this.pins.shake()`.
 This will perform a shake animation and vibration if enabled. A callback can be passed through props which
 will be fired when the animation is complete. See props below.
 
-#### PinInput
+#### Pins
 
 | Prop            | Type          | Optional  | Default              | Description                                                                             |
 | --------------- | ------------- | --------- | -------------------- | --------------------------------------------------------------------------------------- |
-| onRef           | any           | No        |                      | onRef allows you to call the `shake()` method.                                          |
+| onRef           | any           | Yes       |                      | onRef allows you to call the `shake()` method.                                          |
 | activeOnly      | booolean      | yes       | false                | Whether to only fill the active pin or to fill all of them.                             |
 | spacing         | number        | yes       | 15                   | The space between the pins                                                              |
 | pinSize         | number        | yes       | 18                   | The size of the pins                                                                    |
@@ -51,9 +51,9 @@ will be fired when the animation is complete. See props below.
 | numberOfPinsActive | number     | Yes       | 0                    | Number of active pins. You can pass the `pin.length` here.                              |
 | vibration       | bool          | Yes       | true                 | Should vibration be enabled on shake?                                                   |
 | animationShakeCallback | func   | Yes       |                      | A callback triggered when the pin shake animation has finished.                         |
-| containerStyle  | object        | Yes       | See PinInput.js      | Style applied to PINS container.                                                        |
-| pinStyle        | object        | Yes       | See PinInput.js      | Style applied to each circle PIN.                                                       |
-| pinActiveStyle  | object        | Yes       | See PinInput.js      | Style applied to each circle PIN when it is active.                                     |
+| containerStyle  | object        | Yes       | See Pins.js      | Style applied to PINS container.                                                        |
+| pinStyle        | object        | Yes       | See Pins.js      | Style applied to each circle PIN.                                                       |
+| pinActiveStyle  | object        | Yes       | See Pins.js      | Style applied to each circle PIN when it is active.                                     |
 | numberOfPinsMaximum | number    | Yes       |                      | The max number of large pins.                                                           |
 
 ## Contributors ✨
