@@ -137,7 +137,7 @@ class Pins extends Component {
     for (let p = 0; p < numberOfPins; p++) {
       const prevSize = prevPinSizes[p];
       const currentSize = currentPinSizes[p];
-      const currentSizeIsMoreThanZero = currentSize > 0;
+      const currentSizeIsMoreThanZero = hasMaxNumberOfPins ? currentSize > 0 : true;
 
       const size = hasMaxNumberOfPins
         ? animatedPinValue.interpolate({
